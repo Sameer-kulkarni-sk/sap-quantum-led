@@ -20,6 +20,17 @@ import sys
 import time
 import random
 from typing import Tuple, List, Dict
+from pathlib import Path
+
+# Locate rq_led_utils in standard RasQberry install locations
+for _candidate in [
+    Path.home() / 'RasQberry-Two' / 'RQB2-bin',
+    Path.home() / '.local' / 'bin',
+    Path(__file__).resolve().parent.parent.parent / 'RQB2-bin',
+]:
+    if (_candidate / 'rq_led_utils.py').exists():
+        sys.path.insert(0, str(_candidate))
+        break
 
 from rq_led_utils import (
     get_led_config,
