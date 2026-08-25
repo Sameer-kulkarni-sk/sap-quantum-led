@@ -24,6 +24,8 @@ from pathlib import Path
 
 # Locate rq_led_utils in standard RasQberry install locations
 for _candidate in [
+    Path('/usr/bin'),
+    Path('/usr/local/bin'),
     Path.home() / 'RasQberry-Two' / 'RQB2-bin',
     Path.home() / '.local' / 'bin',
     Path(__file__).resolve().parent.parent.parent / 'RQB2-bin',
