@@ -62,8 +62,11 @@ PALETTE: List[Tuple[int, int, int]] = [
 COLOR_OFF: Tuple[int, int, int] = (0, 0, 0)
 COLOR_BLUE = PALETTE[0]
 
-# SAP logo pixel coordinates as (row, col) pairs.
-# map_xy_to_pixel(col, row) handles panel orientation — no manual flip needed.
+# SAP logo pixel coordinates as (row, col) pairs, authored BOTTOM-origin:
+# row 0 is the bottom of the letters, row 7 the top. RasQberry's canvas is
+# top-origin (map_xy_to_pixel's y=0 is the top row), so draw_sap() flips the
+# row within the matrix height before mapping.
+LOGO_HEIGHT = 8  # rows used by the glyph (matches the 24x8 panel)
 SAP_PIXELS: List[Tuple[int, int]] = [
     # Letter S
     (7, 0), (7, 1), (7, 2), (7, 3), (7, 4), (7, 5),
@@ -121,9 +124,10 @@ def quantum_colors(n: int) -> List[Tuple[int, int, int]]:
 
 def draw_sap(pixels, color_by_coord: Dict[Tuple[int, int], Tuple[int, int, int]]) -> None:
     """Set each SAP logo LED to its color from color_by_coord."""
+    top_row = LOGO_HEIGHT - 1
     for coord in SAP_PIXELS:
         row, col = coord
-        idx = map_xy_to_pixel(col, row)
+        idx = map_xy_to_pixel(col, top_row - row)  # bottom-origin glyph -> top-origin canvas
         if idx is not None:
             pixels[idx] = color_by_coord.get(coord, COLOR_BLUE)
 
